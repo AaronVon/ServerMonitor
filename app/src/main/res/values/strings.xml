@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ServerMonitor</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_about">About us</string>
+    <string name="CPU_title">CPU</string>
+    <string name="Memory_title">Memory</string>
+    <string name="Network_title">Network</string>
+    <string name="Disk_title">Disk IO</string>
+    <string name="Process_title">Process</string>
+</resources>
