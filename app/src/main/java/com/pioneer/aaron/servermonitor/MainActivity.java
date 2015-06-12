@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -146,7 +147,12 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-
+            new AlertDialog.Builder(this)
+                    .setTitle("About us")
+                    .setMessage("这是一个实时服务器监视的软件，通过 HTTP 获取服务器(Linux)端的运行状态，包含 CPU、内存、网络、磁盘、处理器的状态信息。\n"
+                        +"APP 端开发: 冯文瀚\n"+"Server 端开发: 彭璟文")
+                    .setPositiveButton("OK", null)
+                    .show();
             return true;
         }
 
