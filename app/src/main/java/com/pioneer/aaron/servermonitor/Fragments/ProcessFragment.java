@@ -24,7 +24,9 @@ public class ProcessFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.process_layout, container, false);
+        View rootView = inflater.inflate(R.layout.process_layout, container, false);
+
+        return rootView;
     }
 
     @Override
