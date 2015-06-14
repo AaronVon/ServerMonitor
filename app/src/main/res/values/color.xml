@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="indicator_1">#ff9000</color>
+    <color name="indicatior_2">#00BCD4</color>
+    <color name="indicator_3">#4e7efb</color>
+    <color name="indicator_4">#5c9f92</color>
+</resources>
