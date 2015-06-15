@@ -13,6 +13,7 @@
 
         <include layout="@layout/material_view_pager_placeholder"/>
 
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,9 +26,88 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1000dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.dlazaro66.wheelindicatorview.WheelIndicatorView
+                        android:layout_width="300dp"
+                        android:layout_height="300dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="20dp"
+                        android:id="@+id/memory_wheel_indicator_view"
+                        app:itemsLineWidth="13dp"
+                        app:backgroundColor="@android:color/white"
+                        />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="18sp"
+                                android:text="Used"
+                                android:id="@+id/used_textView"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true" />
+
+                            <ImageView
+                                android:layout_width="18sp"
+                                android:layout_height="18sp"
+                                android:scaleType="fitXY"
+                                android:adjustViewBounds="true"
+                                android:background="@drawable/indicator_1"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/used_textView" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="18sp"
+                                android:text="Free"
+                                android:id="@+id/free_textView"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true" />
+
+                            <ImageView
+                                android:layout_width="18sp"
+                                android:layout_height="18sp"
+                                android:scaleType="fitXY"
+                                android:adjustViewBounds="true"
+                                android:background="@drawable/indicator_2"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/free_textView" />
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:id="@+id/memory_info" />
             </LinearLayout>
 
         </android.support.v7.widget.CardView>

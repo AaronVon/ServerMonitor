@@ -1,5 +1,9 @@
 package com.pioneer.aaron.servermonitor.Fragments;
 
+import android.app.ListActivity;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,19 +11,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.dlazaro66.wheelindicatorview.WheelIndicatorItem;
+import com.dlazaro66.wheelindicatorview.WheelIndicatorView;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.pioneer.aaron.servermonitor.Constants.Constants;
+import com.pioneer.aaron.servermonitor.Helper.PrecisionFormat;
+import com.pioneer.aaron.servermonitor.Helper.SystemTime;
+import com.pioneer.aaron.servermonitor.JsonUtilities.CPUjsonParser;
 import com.pioneer.aaron.servermonitor.JsonUtilities.JsonHttpUtil;
 import com.pioneer.aaron.servermonitor.R;
 
-import org.apache.http.client.methods.HttpPost;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Aaron on 6/12/15.
@@ -27,22 +38,34 @@ import java.util.Map;
 public class CPUFragment extends Fragment {
 
     private ObservableScrollView mScrollView;
+    private View rootView;
     //params
-    private static final String KEY_API = "api_key";
-    private static final String VALUE_API = "F6F3C79A-A931-D5A0-789863E7C7A84825";
+    private static String VALUE_START = "";
+    private static String VALUE_END = "";
 
-    private static final String KEY_START = "start";
-    private static String VALUE_START = "1433643270";
+    private WheelIndicatorView wheelIndicatorView;
+    private WheelIndicatorItem systemIndicatorItem;
+    private WheelIndicatorItem waitIndicatorItem;
+    private WheelIndicatorItem userIndicatorItem;
+    private float systemLoad, waitLoad, userLoad;
 
-    private static final String KEY_END = "end";
-    private static String VALUE_END = "1433645100";
+    private TextView loggingTextView;
+    private TextView systemTextView;
+    private TextView userTextView;
+    private TextView waitTextView;
 
-    private static final String KEY_ACTION = "api_action";
-    private static final String VALUE_ACTION = "getValues";
 
-    private static final String KEY_KEYS = "keys";
-    private static final String VALUE_KEYS = "[\"CPU.*.wait\",\"CPU.*.user\",\"CPU.*.system\"]";
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    updateUI();
+            }
+        }
+    };
 
+    private Timer mTimer = new Timer();
 
     public static CPUFragment newInstance() {
         return new CPUFragment();
@@ -51,25 +74,80 @@ public class CPUFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.cpu_layout, container, false);
-        //获取 JSON 并显示
+        rootView = inflater.inflate(R.layout.cpu_layout, container, false);
+
+        init();
+
+        return rootView;
+    }
+
+    private void init() {
+
+        wheelIndicatorView = (WheelIndicatorView) rootView.findViewById(R.id.cpu_wheel_indicator_view);
+        systemIndicatorItem = new WheelIndicatorItem(systemLoad, getResources().getColor(R.color.indicator_1));
+        userIndicatorItem = new WheelIndicatorItem(userLoad, getResources().getColor(R.color.indicatior_2));
+        waitIndicatorItem = new WheelIndicatorItem(waitLoad, getResources().getColor(R.color.indicator_3));
+        wheelIndicatorView.addWheelIndicatorItem(systemIndicatorItem);
+        wheelIndicatorView.addWheelIndicatorItem(userIndicatorItem);
+        wheelIndicatorView.addWheelIndicatorItem(waitIndicatorItem);
+
+        loggingTextView = (TextView) rootView.findViewById(R.id.cpu_info);
+        systemTextView = (TextView) rootView.findViewById(R.id.system_textView);
+        userTextView = (TextView) rootView.findViewById(R.id.user_textView);
+        waitTextView = (TextView) rootView.findViewById(R.id.wait_textView);
+
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.sendEmptyMessage(0);
+            }
+        }, 0, 10000/*server update data every 5 min*/);
+    }
+
+    private void updateUI() {
         Map<String, String> params = new HashMap<>();
         try {
-            params.put(KEY_API, VALUE_API);
-            VALUE_START = "" + (System.currentTimeMillis() / 1000 - 3600);
-            VALUE_END = "" + (System.currentTimeMillis() / 1000);
-            params.put(KEY_START, VALUE_START);
-            params.put(KEY_END, VALUE_END);
-            params.put(KEY_ACTION, VALUE_ACTION);
-            params.put(KEY_KEYS, VALUE_KEYS);
+            params.put(Constants.KEY_API, Constants.VALUE_API);
+            VALUE_START = SystemTime.newInstance().getStart();
+            VALUE_END = SystemTime.newInstance().getEnd();
+            params.put(Constants.KEY_START, VALUE_START);
+            params.put(Constants.KEY_END, VALUE_END);
+            params.put(Constants.KEY_ACTION, Constants.VALUE_ACTION);
+            params.put(Constants.KEY_KEYS, Constants.CPU_VALUE_KEYS);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        String jsonMETA = new JsonHttpUtil().getJsonMETA(Constants.POST_URL, params);
 
-        String s = new JsonHttpUtil().getJsonContent("https://longview.linode.com/fetch", params);
+        Map<String, Float> data = new HashMap<>();
+        data = CPUjsonParser.newInstance().parseJSON(jsonMETA);
 
-        ((TextView) rootView.findViewById(R.id.textView)).setText(s);
-        return rootView;
+        //handle empty data response
+        if (data.get("system") == null) {
+            return;
+        }
+
+        systemLoad =  data.get("system") * 10;
+        userLoad = data.get("user") * 10;
+        waitLoad = data.get("wait") * 10;
+        Log.d("system", systemLoad + "");
+        Log.d("user", userLoad + "");
+        Log.d("wait", waitLoad + "");
+
+        loggingTextView.setText(jsonMETA);
+        systemTextView.setText("System " + PrecisionFormat.newInstance().shrink(systemLoad, 2) + "%");
+        userTextView.setText("User " + PrecisionFormat.newInstance().shrink(userLoad, 2) + "%");
+        waitTextView.setText("Wait " + PrecisionFormat.newInstance().shrink(waitLoad, 2) + "%");
+
+        int percentageInAll = (int) (systemLoad + userLoad + waitLoad);
+
+        systemIndicatorItem.setWeight(systemLoad);
+        userIndicatorItem.setWeight(userLoad);
+        waitIndicatorItem.setWeight(waitLoad);
+
+        wheelIndicatorView.setFilledPercent(percentageInAll);
+        wheelIndicatorView.notifyDataSetChanged();
+        wheelIndicatorView.startItemsAnimation();
     }
 
     @Override
@@ -77,5 +155,11 @@ public class CPUFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mScrollView = (ObservableScrollView) view.findViewById(R.id.cpu_ScrollView);
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
+    }
+
+    @Override
+    public void onStop() {
+        mTimer.cancel();
+        super.onStop();
     }
 }

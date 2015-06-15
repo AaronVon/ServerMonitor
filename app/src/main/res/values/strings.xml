@@ -9,4 +9,5 @@
     <string name="Network_title">Network</string>
     <string name="Disk_title">Disk IO</string>
     <string name="Process_title">Process</string>
+    <string name="MEtALoggingTitle">More META Logging</string>
 </resources>

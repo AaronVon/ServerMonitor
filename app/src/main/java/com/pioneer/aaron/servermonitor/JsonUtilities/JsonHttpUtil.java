@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -23,36 +24,20 @@ import java.util.concurrent.ExecutionException;
  */
 public class JsonHttpUtil {
 
-    public String getJsonContent(String url, Map<String, String> params) {
-//        byte[] data = getRequestData(params).toString().getBytes();
+    public String getJsonMETA(String url, Map<String, String> params) {
 
         String JSON = "";
         try {
             JSON = new LoadAsync().execute(url, params).get().toString();
+//            Map<String, Float> DATA = CPUjsonParser.newInstance().parseJSON(JSON);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-
         return JSON;
-    }
-
-    private String dealResponseResult(InputStream inputStream) {
-        String stringData = "";
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-        int length = 0;
-        try {
-            while ((length = inputStream.read(data)) != -1) {
-                byteArrayOutputStream.write(data, 0, length);
-            }
-            stringData = new String(byteArrayOutputStream.toByteArray(), "utf-8");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stringData;
     }
 
     private String getRequestData(Map<String, String> params) {
@@ -69,7 +54,7 @@ public class JsonHttpUtil {
         }
 
         stringBuffer.deleteCharAt(stringBuffer.length() - 1);
-        Log.d("StringBuffer: ", stringBuffer.toString());
+//        Log.d("StringBuffer: ", stringBuffer.toString());
 
         return stringBuffer.toString();
     }
@@ -109,7 +94,7 @@ public class JsonHttpUtil {
                     }
                     bufferedReader.close();
                     httpURLConnection.disconnect();
-                    Log.d("JSON_Result: ", JSON_Result.toString());
+//                    Log.d("JSON_Result: ", JSON_Result.toString());
                     return JSON_Result.toString();
                 }
             } catch (Exception e) {

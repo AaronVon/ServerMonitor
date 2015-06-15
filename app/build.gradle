@@ -22,7 +22,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile ('com.github.florent37:materialviewpager:1.0.5@aar'){
+    compile 'com.dlazaro66.wheelindicatorview:WheelIndicatorView:1.0.0'
+    compile('com.github.florent37:materialviewpager:1.0.5@aar') {
         transitive = true
     }
+    compile files('/Users/Aaron/repositories/ServerMonitor/libs/listviewanimations_lib-core-slh_3.1.0.jar')
+    compile files('/Users/Aaron/repositories/ServerMonitor/libs/listviewanimations_lib-core_3.1.0.jar')
+    compile files('/Users/Aaron/repositories/ServerMonitor/libs/listviewanimations_lib-manipulation_3.1.0.jar')
+    compile 'com.diogobernardino:williamchart:1.7.0'
 }

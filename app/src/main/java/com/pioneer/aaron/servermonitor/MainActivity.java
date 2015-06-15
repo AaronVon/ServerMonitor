@@ -19,7 +19,6 @@ import com.pioneer.aaron.servermonitor.Fragments.CPUFragment;
 import com.pioneer.aaron.servermonitor.Fragments.DiskFragment;
 import com.pioneer.aaron.servermonitor.Fragments.MemoryFragment;
 import com.pioneer.aaron.servermonitor.Fragments.NetworkFragment;
-import com.pioneer.aaron.servermonitor.Fragments.ProcessFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -67,15 +66,13 @@ public class MainActivity extends AppCompatActivity {
                         return NetworkFragment.newInstance();
                     case 3:
                         return DiskFragment.newInstance();
-                    case 4:
-                        return ProcessFragment.newInstance();
                 }
                 return null;
             }
 
             @Override
             public int getCount() {
-                return 5;
+                return 4;
             }
 
             @Override
@@ -89,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
                         return getResources().getString(R.string.Network_title);
                     case 3:
                         return getResources().getString(R.string.Disk_title);
-                    case 4:
-                        return getResources().getString(R.string.Process_title);
                 }
                 return "";
             }
@@ -103,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         return HeaderDesign.fromColorResAndUrl(
                                 R.color.blue,
-                                "http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2014/06/wallpaper_51.jpg");
+                                "http://img1.mydrivers.com/img/20141111/s_670e861143b54639bfaece09b9ccd309.jpg");
                     case 1:
                         return HeaderDesign.fromColorResAndUrl(
                                 R.color.green,
@@ -116,10 +111,6 @@ public class MainActivity extends AppCompatActivity {
                         return HeaderDesign.fromColorResAndUrl(
                                 R.color.red,
                                 "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg");
-                    case 4:
-                        return HeaderDesign.fromColorAndUrl(
-                                R.color.green_teal,
-                                "http://img1.mydrivers.com/img/20141111/s_670e861143b54639bfaece09b9ccd309.jpg");
                 }
                 return null;
             }
