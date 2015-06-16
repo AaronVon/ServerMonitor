@@ -1,5 +1,7 @@
 package com.pioneer.aaron.servermonitor.JsonUtilities;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +28,16 @@ public class DiskjsonParser {
             JSONObject objectDATA_2 = new JSONObject(jsonArray.getJSONObject(0).toString())
                     .getJSONObject("DATA").getJSONObject("Disk").getJSONObject("/dev/xvdb");
 
-            JSONArray xvdaReadArray = objectDATA_1.getJSONArray("reads");
-            JSONArray xvdaWriteArray = objectDATA_1.getJSONArray("writes");
+            JSONObject xvdaReadObject = new JSONObject(objectDATA_1.getJSONArray("reads").getJSONObject(0).toString());
+            JSONObject xvdaWriteObject = new JSONObject(objectDATA_1.getJSONArray("writes").getJSONObject(0).toString());
 
-            JSONArray xvdbReadArray = objectDATA_2.getJSONArray("reads");
-            JSONArray xvdbWriteArray = objectDATA_2.getJSONArray("writes");
+            JSONObject xvdbReadObject = new JSONObject(objectDATA_2.getJSONArray("reads").getJSONObject(0).toString());
+            JSONObject xvdbWriteObject = new JSONObject(objectDATA_2.getJSONArray("writes").getJSONObject(0).toString());
+
+            map.put("xvdar", Float.parseFloat(xvdaReadObject.get("y").toString()));
+            map.put("xvdaw", Float.parseFloat(xvdaWriteObject.get("y").toString()));
+            map.put("xvdbr", Float.parseFloat(xvdbReadObject.get("y").toString()));
+            map.put("xvdbw", Float.parseFloat(xvdbWriteObject.get("y").toString()));
 
         } catch (JSONException e) {
             e.printStackTrace();

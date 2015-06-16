@@ -1,6 +1,11 @@
 package com.pioneer.aaron.servermonitor;
 
+import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.os.Bundle;
@@ -19,6 +24,7 @@ import com.pioneer.aaron.servermonitor.Fragments.CPUFragment;
 import com.pioneer.aaron.servermonitor.Fragments.DiskFragment;
 import com.pioneer.aaron.servermonitor.Fragments.MemoryFragment;
 import com.pioneer.aaron.servermonitor.Fragments.NetworkFragment;
+import com.pioneer.aaron.servermonitor.Helper.NetworkStatusUtil;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        checkNetworkState();
     }
 
     private void init() {
@@ -96,21 +103,21 @@ public class MainActivity extends AppCompatActivity {
             public HeaderDesign getHeaderDesign(int i) {
                 switch (i) {
                     case 0:
-                        return HeaderDesign.fromColorResAndUrl(
+                        return HeaderDesign.fromColorAndDrawable(
                                 R.color.blue,
-                                "http://img1.mydrivers.com/img/20141111/s_670e861143b54639bfaece09b9ccd309.jpg");
+                                getResources().getDrawable(R.drawable.header_1));
                     case 1:
-                        return HeaderDesign.fromColorResAndUrl(
+                        return HeaderDesign.fromColorAndDrawable(
                                 R.color.green,
-                                "https://fs01.androidpit.info/a/63/0e/android-l-wallpapers-630ea6-h900.jpg");
+                                getResources().getDrawable(R.drawable.header_2));
                     case 2:
-                        return HeaderDesign.fromColorResAndUrl(
+                        return HeaderDesign.fromColorAndDrawable(
                                 R.color.cyan,
-                                "http://www.droid-life.com/wp-content/uploads/2014/10/lollipop-wallpapers10.jpg");
+                                getResources().getDrawable(R.drawable.header_3));
                     case 3:
-                        return HeaderDesign.fromColorResAndUrl(
+                        return HeaderDesign.fromColorAndDrawable(
                                 R.color.red,
-                                "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg");
+                                getResources().getDrawable(R.drawable.header_4));
                 }
                 return null;
             }
@@ -120,6 +127,52 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
         mViewPager.getViewPager().setCurrentItem(0);
 
+    }
+
+    private void checkNetworkState() {
+        boolean isAvailable;
+        isAvailable = new NetworkStatusUtil(this).isAvailable();
+        if (!isAvailable) {
+            setNetwork();
+        }
+    }
+
+    /**
+     * if network is unavailable, call this method
+     * */
+    private void setNetwork() {
+        new android.app.AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_launcher)
+                .setTitle("网络提示信息")
+                .setMessage("网络不可用，请先设置网络")
+                .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = null;
+//                        call different Setting by different SDK
+                        if (Build.VERSION.SDK_INT > 10) {
+                            intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+//                            intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                        } else {
+                            intent = new Intent();
+                            ComponentName componentName = new ComponentName(
+                                    "com.android.settings",
+                                    "com.android.settings.WirelessSettings"
+                            );
+                            intent.setComponent(componentName);
+                            intent.setAction("android.intent.action.VIEW");
+                        }
+
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        null
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -139,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
             new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_launcher)
                     .setTitle("About us")
                     .setMessage("这是一个实时服务器监视的软件，通过 HTTP 获取服务器(Linux)端的运行状态，包含 CPU、内存、网络、磁盘、处理器的状态信息。\n"
                         +"APP 端开发: 冯文瀚\n"+"Server 端开发: 彭璟文")

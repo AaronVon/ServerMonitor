@@ -66,6 +66,7 @@ public class CPUFragment extends Fragment {
     };
 
     private Timer mTimer = new Timer();
+    private boolean instanceState = false;
 
     public static CPUFragment newInstance() {
         return new CPUFragment();
@@ -101,7 +102,7 @@ public class CPUFragment extends Fragment {
             public void run() {
                 mHandler.sendEmptyMessage(0);
             }
-        }, 0, 10000/*server update data every 5 min*/);
+        }, 10, 10000/*server update data every 5 min*/);
     }
 
     private void updateUI() {
@@ -134,7 +135,7 @@ public class CPUFragment extends Fragment {
         Log.d("user", userLoad + "");
         Log.d("wait", waitLoad + "");
 
-        loggingTextView.setText(jsonMETA);
+        loggingTextView.setText("Meta Data\n" + jsonMETA);
         systemTextView.setText("System " + PrecisionFormat.newInstance().shrink(systemLoad, 2) + "%");
         userTextView.setText("User " + PrecisionFormat.newInstance().shrink(userLoad, 2) + "%");
         waitTextView.setText("Wait " + PrecisionFormat.newInstance().shrink(waitLoad, 2) + "%");

@@ -59,6 +59,7 @@ public class MemoryFragment extends Fragment {
         }
     };
 
+    private boolean instanceState = false;
 
     public static MemoryFragment newInstance() {
         return new MemoryFragment();
@@ -72,6 +73,7 @@ public class MemoryFragment extends Fragment {
 
         return rootView;
     }
+
 
     private void init() {
         wheelIndicatorView = (WheelIndicatorView) rootView.findViewById(R.id.memory_wheel_indicator_view);
@@ -89,7 +91,7 @@ public class MemoryFragment extends Fragment {
             public void run() {
                 mHandler.sendEmptyMessage(0);
             }
-        }, 20, 10000);
+        }, 30, 20000);
     }
 
     private void updateUI() {
@@ -120,7 +122,7 @@ public class MemoryFragment extends Fragment {
 
         usedTextView.setText("Used: " + PrecisionFormat.newInstance().shrink(usedLoad, 2) + "MB");
         freeTextView.setText("Free: " + PrecisionFormat.newInstance().shrink(freeLoad, 2) + "MB");
-        loggingTextView.setText(jsonMETA);
+        loggingTextView.setText("Meta Data\n" + jsonMETA);
 
         wheelIndicatorView.setFilledPercent(100);
         usedIndicatorItem.setWeight(usedLoad);

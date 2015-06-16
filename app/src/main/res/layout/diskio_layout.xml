@@ -25,8 +25,36 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1000dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <com.db.chart.view.HorizontalBarChartView
+                    xmlns:chart="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/horbarchart_disk"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_weight=".22"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginBottom="2dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="#f67743"
+                    chart:chart_axisColor="@color/axis"
+                    chart:chart_labelColor="@color/label"
+                    chart:chart_axisBorderSpacing="25dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Meta Data"
+                    android:id="@+id/diskio_info" />
 
             </LinearLayout>
 

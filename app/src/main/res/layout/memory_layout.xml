@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
+                    android:text="Meta Data"
                     android:id="@+id/memory_info" />
             </LinearLayout>
 
