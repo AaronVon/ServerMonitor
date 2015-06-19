@@ -59,21 +59,41 @@ public class MemoryFragment extends Fragment {
         }
     };
 
-    private boolean instanceState = false;
+    private boolean instanceLoaded = false;
 
     public static MemoryFragment newInstance() {
         return new MemoryFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.memory_layout, container, false);
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        rootView = inflater.inflate(R.layout.memory_layout,
+                (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
         init();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup viewGroup = (ViewGroup) rootView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeAllViewsInLayout();
+        }
 
         return rootView;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && instanceLoaded) {
+            updateUI();
+        }
+        if (!isVisibleToUser && instanceLoaded) {
+
+        }
+    }
 
     private void init() {
         wheelIndicatorView = (WheelIndicatorView) rootView.findViewById(R.id.memory_wheel_indicator_view);
@@ -86,12 +106,14 @@ public class MemoryFragment extends Fragment {
         freeTextView = (TextView) rootView.findViewById(R.id.free_textView);
         loggingTextView = (TextView) rootView.findViewById(R.id.memory_info);
 
-        mTimer.schedule(new TimerTask() {
+        instanceLoaded = true;
+
+        /*mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mHandler.sendEmptyMessage(0);
             }
-        }, 30, 20000);
+        }, 30, 20000);*/
     }
 
     private void updateUI() {

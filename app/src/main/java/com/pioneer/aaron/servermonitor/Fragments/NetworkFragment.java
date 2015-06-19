@@ -36,6 +36,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewParent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout.LayoutParams;
@@ -141,16 +142,28 @@ public class NetworkFragment extends Fragment {
     };
 
     private Timer mTimer;
+    private boolean instanceLoaded = false;
+
 
     public static NetworkFragment newInstance() {
         return new NetworkFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.network_layout, container, false);
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        rootView = inflater.inflate(R.layout.network_layout,
+                (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
         init();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup viewGroup = (ViewGroup) rootView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeAllViewsInLayout();
+        }
         return rootView;
     }
 
@@ -177,14 +190,17 @@ public class NetworkFragment extends Fragment {
         mHorBarGridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
         updateHorBarChart();
         loggingTextView = (TextView) rootView.findViewById(R.id.network_info);
+
+        instanceLoaded = true;
+
         mTimer = new Timer();
 
-        mTimer.schedule(new TimerTask() {
+        /*mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mHandler.sendEmptyMessage(0);
             }
-        }, 50, 20000);
+        }, 50, 20000);*/
     }
 
     private void updateUI() {
@@ -224,6 +240,17 @@ public class NetworkFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mScrollView = (ObservableScrollView) view.findViewById(R.id.network_ScrollView);
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && instanceLoaded) {
+            updateUI();
+        }
+        if (!isVisibleToUser && instanceLoaded) {
+
+        }
     }
 
     private void updateHorBarChart(){

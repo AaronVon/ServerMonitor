@@ -81,6 +81,7 @@ public class DiskFragment extends Fragment {
 
     private static String VALUE_START = "";
     private static String VALUE_END = "";
+    private boolean instanceLoaded = false;
 
     public static DiskFragment newInstance() {
         return new DiskFragment();
@@ -166,12 +167,21 @@ public class DiskFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        rootView = inflater.inflate(R.layout.diskio_layout,
+                (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
+        init();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.diskio_layout, container, false);
-
-        init();
+        ViewGroup viewGroup = (ViewGroup) rootView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeAllViewsInLayout();
+        }
 
         return rootView;
     }
@@ -181,6 +191,17 @@ public class DiskFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mScrollView = (ObservableScrollView) view.findViewById(R.id.diskio_ScrollView);
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && instanceLoaded) {
+            updateUI();
+        }
+        if (!isVisibleToUser && instanceLoaded) {
+
+        }
     }
 
     public void init() {
@@ -209,12 +230,14 @@ public class DiskFragment extends Fragment {
         mTimer = new Timer();
         loggingTextView = (TextView) rootView.findViewById(R.id.diskio_info);
 
-        mTimer.schedule(new TimerTask() {
+        instanceLoaded = true;
+
+        /*mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mHandler.sendEmptyMessage(0);
             }
-        }, 70, 30000);
+        }, 70, 30000);*/
     }
 
     public void updateUI() {

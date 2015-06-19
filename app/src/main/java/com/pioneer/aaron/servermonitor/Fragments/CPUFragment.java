@@ -66,20 +66,41 @@ public class CPUFragment extends Fragment {
     };
 
     private Timer mTimer = new Timer();
-    private boolean instanceState = false;
+    private boolean instanceLoaded= false;
 
     public static CPUFragment newInstance() {
         return new CPUFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //initialize fragments
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        rootView = inflater.inflate(R.layout.cpu_layout,
+                (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
+        init();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.cpu_layout, container, false);
-
-        init();
-
+        ViewGroup viewGroup = (ViewGroup) rootView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeAllViewsInLayout();
+        }
         return rootView;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && instanceLoaded) {
+            updateUI();
+        }
+        if (!isVisibleToUser && instanceLoaded) {
+
+        }
     }
 
     private void init() {
@@ -97,12 +118,14 @@ public class CPUFragment extends Fragment {
         userTextView = (TextView) rootView.findViewById(R.id.user_textView);
         waitTextView = (TextView) rootView.findViewById(R.id.wait_textView);
 
-        mTimer.schedule(new TimerTask() {
+        instanceLoaded = true;
+
+        /*mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 mHandler.sendEmptyMessage(0);
             }
-        }, 10, 10000/*server update data every 5 min*/);
+        }, 10, 10000*//*server update data every 5 min*//*);*/
     }
 
     private void updateUI() {
