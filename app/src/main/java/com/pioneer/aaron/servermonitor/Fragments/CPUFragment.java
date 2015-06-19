@@ -96,10 +96,20 @@ public class CPUFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && instanceLoaded) {
-            updateUI();
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    //have to use handler to send message to the activity's original thread to deal with the ui components
+                    //or will get exceptions
+                    mHandler.sendEmptyMessage(0);
+                    Log.d("cpufragment", "refresh ui");
+                }
+            }, 0, 10000);
         }
         if (!isVisibleToUser && instanceLoaded) {
-
+            mTimer.cancel();
+            Log.d("cpufragment", "thread shut down");
         }
     }
 
@@ -120,12 +130,6 @@ public class CPUFragment extends Fragment {
 
         instanceLoaded = true;
 
-        /*mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.sendEmptyMessage(0);
-            }
-        }, 10, 10000*//*server update data every 5 min*//*);*/
     }
 
     private void updateUI() {

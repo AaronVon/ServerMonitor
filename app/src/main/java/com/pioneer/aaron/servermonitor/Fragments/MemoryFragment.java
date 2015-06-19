@@ -88,10 +88,16 @@ public class MemoryFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && instanceLoaded) {
-            updateUI();
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(0);
+                }
+            }, 0, 10000);
         }
         if (!isVisibleToUser && instanceLoaded) {
-
+            mTimer.cancel();
         }
     }
 
