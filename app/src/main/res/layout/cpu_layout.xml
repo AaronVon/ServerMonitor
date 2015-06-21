@@ -120,17 +120,24 @@
                                 android:layout_centerVertical="true"
                                 android:layout_toStartOf="@+id/wait_textView" />
                         </RelativeLayout>
-                    </LinearLayout>
 
+                    </LinearLayout>
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Meta Data"
-                    android:id="@+id/cpu_info" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/cpu_list_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView
+                        android:id="@+id/cpu_meta_listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"/>
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
         </android.support.v7.widget.CardView>

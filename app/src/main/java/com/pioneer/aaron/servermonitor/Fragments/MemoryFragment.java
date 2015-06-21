@@ -45,7 +45,6 @@ public class MemoryFragment extends Fragment {
 
     private TextView usedTextView;
     private TextView freeTextView;
-    private TextView loggingTextView;
 
     private Timer mTimer = new Timer();
 
@@ -110,7 +109,6 @@ public class MemoryFragment extends Fragment {
 
         usedTextView = (TextView) rootView.findViewById(R.id.used_textView);
         freeTextView = (TextView) rootView.findViewById(R.id.free_textView);
-        loggingTextView = (TextView) rootView.findViewById(R.id.memory_info);
 
         instanceLoaded = true;
 
@@ -150,7 +148,6 @@ public class MemoryFragment extends Fragment {
 
         usedTextView.setText("Used: " + PrecisionFormat.newInstance().shrink(usedLoad, 2) + "MB");
         freeTextView.setText("Free: " + PrecisionFormat.newInstance().shrink(freeLoad, 2) + "MB");
-        loggingTextView.setText("Meta Data\n" + jsonMETA);
 
         wheelIndicatorView.setFilledPercent(100);
         usedIndicatorItem.setWeight(usedLoad);

@@ -101,13 +101,11 @@
 
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Meta Data"
-                    android:id="@+id/memory_info" />
+                <com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView
+                    android:id="@+id/memory_meta_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>

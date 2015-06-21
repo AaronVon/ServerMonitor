@@ -1,7 +1,6 @@
 package com.pioneer.aaron.servermonitor.Fragments;
 
-import android.app.ListActivity;
-import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -12,18 +11,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.dlazaro66.wheelindicatorview.WheelIndicatorItem;
 import com.dlazaro66.wheelindicatorview.WheelIndicatorView;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.pioneer.aaron.servermonitor.Adapters.ExpandableListAdapter;
 import com.pioneer.aaron.servermonitor.Constants.Constants;
 import com.pioneer.aaron.servermonitor.Helper.PrecisionFormat;
 import com.pioneer.aaron.servermonitor.Helper.SystemTime;
 import com.pioneer.aaron.servermonitor.JsonUtilities.CPUjsonParser;
 import com.pioneer.aaron.servermonitor.JsonUtilities.JsonHttpUtil;
 import com.pioneer.aaron.servermonitor.R;
+import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
+import com.pioneer.aaron.servermonitor.Constants.ExpandableListView_Helper.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +53,15 @@ public class CPUFragment extends Fragment {
     private WheelIndicatorItem userIndicatorItem;
     private float systemLoad, waitLoad, userLoad;
 
-    private TextView loggingTextView;
     private TextView systemTextView;
     private TextView userTextView;
     private TextView waitTextView;
 
+    //expandable list view
+    private AnimatedExpandableListView listView;
+    private ExpandableListAdapter adapter;
+    private List<GroupItem> items = new ArrayList<>();
+    private GroupItem groupItem = new GroupItem();
 
     private Handler mHandler = new Handler() {
         @Override
@@ -123,13 +131,11 @@ public class CPUFragment extends Fragment {
         wheelIndicatorView.addWheelIndicatorItem(userIndicatorItem);
         wheelIndicatorView.addWheelIndicatorItem(waitIndicatorItem);
 
-        loggingTextView = (TextView) rootView.findViewById(R.id.cpu_info);
         systemTextView = (TextView) rootView.findViewById(R.id.system_textView);
         userTextView = (TextView) rootView.findViewById(R.id.user_textView);
         waitTextView = (TextView) rootView.findViewById(R.id.wait_textView);
-
+        initListView();
         instanceLoaded = true;
-
     }
 
     private void updateUI() {
@@ -155,6 +161,10 @@ public class CPUFragment extends Fragment {
             return;
         }
 
+        updateListView(VALUE_START, jsonMETA);
+//        setLinearLayoutHeight(rootView.findViewById(R.id.cpu_meta_listview));
+        setListViewHeight(listView);
+
         systemLoad =  data.get("system") * 10;
         userLoad = data.get("user") * 10;
         waitLoad = data.get("wait") * 10;
@@ -162,7 +172,6 @@ public class CPUFragment extends Fragment {
         Log.d("user", userLoad + "");
         Log.d("wait", waitLoad + "");
 
-        loggingTextView.setText("Meta Data\n" + jsonMETA);
         systemTextView.setText("System " + PrecisionFormat.newInstance().shrink(systemLoad, 2) + "%");
         userTextView.setText("User " + PrecisionFormat.newInstance().shrink(userLoad, 2) + "%");
         waitTextView.setText("Wait " + PrecisionFormat.newInstance().shrink(waitLoad, 2) + "%");
@@ -176,6 +185,59 @@ public class CPUFragment extends Fragment {
         wheelIndicatorView.setFilledPercent(percentageInAll);
         wheelIndicatorView.notifyDataSetChanged();
         wheelIndicatorView.startItemsAnimation();
+    }
+
+    private void initListView() {
+
+        groupItem.title = "JSON META";
+        items.add(groupItem);
+
+        adapter = new ExpandableListAdapter(getActivity());
+        adapter.setData(items);
+
+        listView = (AnimatedExpandableListView) rootView.findViewById(R.id.cpu_meta_listview);
+        listView.setAdapter(adapter);
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (listView.isGroupExpanded(groupPosition)) {
+                    listView.collapseGroupWithAnimation(groupPosition);
+                } else {
+                    listView.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
+            }
+        });
+    }
+
+    private void updateListView(String hint, String title) {
+        ChildItem childItem = new ChildItem();
+        childItem.title = title;
+        childItem.hint = hint;
+
+        groupItem.items.add(childItem);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void setLinearLayoutHeight(View view) {
+        ViewGroup.LayoutParams linearParams = view.getLayoutParams();
+        linearParams.height += 600;
+    }
+
+    private void setListViewHeight(ExpandableListView view) {
+        ListAdapter listAdapter = view.getAdapter();
+        int totalHeight = 0;
+
+        for (int i = 0; i < listAdapter.getCount(); ++i) {
+            View listItem = listAdapter.getView(i, null, view);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     @Override

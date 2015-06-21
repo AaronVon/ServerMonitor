@@ -77,7 +77,6 @@ public class DiskFragment extends Fragment {
     private ObservableScrollView mScrollView;
     private View rootView;
     private Timer mTimer;
-    private TextView loggingTextView;
 
     private static String VALUE_START = "";
     private static String VALUE_END = "";
@@ -234,7 +233,6 @@ public class DiskFragment extends Fragment {
         mHorBarGridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
         updateHorBarChart();
         mTimer = new Timer();
-        loggingTextView = (TextView) rootView.findViewById(R.id.diskio_info);
 
         instanceLoaded = true;
 
@@ -260,7 +258,6 @@ public class DiskFragment extends Fragment {
             e.printStackTrace();
         }
         String jsonMETA = new JsonHttpUtil().getJsonMETA(Constants.POST_URL, params);
-        loggingTextView.setText("Meta Data\n" + jsonMETA);
         Map<String, Float> data = new HashMap<>();
         data = DiskjsonParser.newInstance().parseJSON(jsonMETA);
 

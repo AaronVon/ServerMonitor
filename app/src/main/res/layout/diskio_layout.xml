@@ -48,13 +48,11 @@
                     chart:chart_axisBorderSpacing="25dp"
                     />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Meta Data"
-                    android:id="@+id/diskio_info" />
+                <com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView
+                    android:id="@+id/disk_meta_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView>
 
             </LinearLayout>
 

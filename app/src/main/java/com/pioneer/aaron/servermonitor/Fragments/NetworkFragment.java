@@ -55,7 +55,6 @@ public class NetworkFragment extends Fragment {
 
     private ObservableScrollView mScrollView;
     private View rootView;
-    private TextView loggingTextView;
     private static String VALUE_START = "";
     private static String VALUE_END = "";
 
@@ -189,7 +188,6 @@ public class NetworkFragment extends Fragment {
         mHorBarGridPaint.setAntiAlias(true);
         mHorBarGridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
         updateHorBarChart();
-        loggingTextView = (TextView) rootView.findViewById(R.id.network_info);
 
         instanceLoaded = true;
 
@@ -217,7 +215,6 @@ public class NetworkFragment extends Fragment {
             e.printStackTrace();
         }
         String jsonMETA = new JsonHttpUtil().getJsonMETA(Constants.POST_URL, params);
-        loggingTextView.setText("Meta Data\n" + jsonMETA);
         Map<String, Float> data = NetworkjsonParser.newInstance().parseJSON(jsonMETA);
 
         if (null == data.get("vpns0_r")) {
