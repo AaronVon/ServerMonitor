@@ -1,5 +1,6 @@
 package com.pioneer.aaron.servermonitor.Fragments;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -9,20 +10,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.dlazaro66.wheelindicatorview.WheelIndicatorItem;
 import com.dlazaro66.wheelindicatorview.WheelIndicatorView;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.pioneer.aaron.servermonitor.Adapters.ExpandableListAdapter;
 import com.pioneer.aaron.servermonitor.Constants.Constants;
+import com.pioneer.aaron.servermonitor.Helper.DynamicListviewUtil;
 import com.pioneer.aaron.servermonitor.Helper.PrecisionFormat;
 import com.pioneer.aaron.servermonitor.Helper.SystemTime;
 import com.pioneer.aaron.servermonitor.JsonUtilities.JsonHttpUtil;
 import com.pioneer.aaron.servermonitor.JsonUtilities.MemoryjsonParser;
+import com.pioneer.aaron.servermonitor.MainActivity;
 import com.pioneer.aaron.servermonitor.R;
+import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
+import com.pioneer.aaron.servermonitor.Constants.ExpandableListView_Helper.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,6 +54,11 @@ public class MemoryFragment extends Fragment {
 
     private TextView usedTextView;
     private TextView freeTextView;
+    //expandablelistview with animation
+    private AnimatedExpandableListView listView;
+    private ExpandableListAdapter adapter;
+    private List<GroupItem> items = new ArrayList<>();
+    private GroupItem groupItem = new GroupItem();
 
     private Timer mTimer = new Timer();
 
@@ -59,6 +73,7 @@ public class MemoryFragment extends Fragment {
     };
 
     private boolean instanceLoaded = false;
+    private Context mContext;
 
     public static MemoryFragment newInstance() {
         return new MemoryFragment();
@@ -67,6 +82,7 @@ public class MemoryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         rootView = inflater.inflate(R.layout.memory_layout,
                 (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
@@ -109,15 +125,32 @@ public class MemoryFragment extends Fragment {
 
         usedTextView = (TextView) rootView.findViewById(R.id.used_textView);
         freeTextView = (TextView) rootView.findViewById(R.id.free_textView);
-
+        initListView();
         instanceLoaded = true;
+    }
 
-        /*mTimer.schedule(new TimerTask() {
+    private void initListView() {
+        groupItem.title = "JSON META";
+        items.add(groupItem);
+
+        adapter = new ExpandableListAdapter(mContext);
+        adapter.setData(items);
+
+        listView = (AnimatedExpandableListView) rootView.findViewById(R.id.memory_meta_listview);
+        listView.setAdapter(adapter);
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
-            public void run() {
-                mHandler.sendEmptyMessage(0);
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (listView.isGroupExpanded(groupPosition)) {
+                    listView.collapseGroupWithAnimation(groupPosition);
+                    DynamicListviewUtil.newInstance().resetHeight(listView, groupPosition);
+                } else {
+                    DynamicListviewUtil.newInstance().setExpandableListViewHeight(listView, groupPosition);
+                    listView.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
             }
-        }, 30, 20000);*/
+        });
     }
 
     private void updateUI() {
@@ -135,6 +168,7 @@ public class MemoryFragment extends Fragment {
         }
 
         String jsonMETA = new JsonHttpUtil().getJsonMETA(Constants.POST_URL, params);
+        updateListView(VALUE_START, jsonMETA);
 
         Map<String, Float> data = new HashMap<>();
         data = MemoryjsonParser.newInstance().parseJSON(jsonMETA);
@@ -154,6 +188,15 @@ public class MemoryFragment extends Fragment {
         freeIndicatorItem.setWeight(freeLoad);
         wheelIndicatorView.notifyDataSetChanged();
         wheelIndicatorView.startItemsAnimation();
+    }
+
+    private void updateListView(String hint, String title) {
+        ChildItem childItem = new ChildItem();
+        childItem.title = title;
+        childItem.hint = hint;
+
+        groupItem.items.add(childItem);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cpu_ScrollView"
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -128,12 +129,12 @@
                     android:orientation="vertical"
                     android:id="@+id/cpu_list_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView
                         android:id="@+id/cpu_meta_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"/>
+                        android:layout_height="60dp"/>
 
                 </LinearLayout>
 

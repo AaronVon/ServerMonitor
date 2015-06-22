@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mViewPager.getViewPager().setOffscreenPageLimit(4);
+        mViewPager.getViewPager().setOffscreenPageLimit(1);
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
         mViewPager.getViewPager().setCurrentItem(0);
 

@@ -1,5 +1,6 @@
 package com.pioneer.aaron.servermonitor.Fragments;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
@@ -21,6 +23,7 @@ import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.pioneer.aaron.servermonitor.Adapters.ExpandableListAdapter;
 import com.pioneer.aaron.servermonitor.Constants.Constants;
+import com.pioneer.aaron.servermonitor.Helper.DynamicListviewUtil;
 import com.pioneer.aaron.servermonitor.Helper.PrecisionFormat;
 import com.pioneer.aaron.servermonitor.Helper.SystemTime;
 import com.pioneer.aaron.servermonitor.JsonUtilities.CPUjsonParser;
@@ -75,6 +78,7 @@ public class CPUFragment extends Fragment {
 
     private Timer mTimer = new Timer();
     private boolean instanceLoaded= false;
+    private Context mContext;
 
     public static CPUFragment newInstance() {
         return new CPUFragment();
@@ -84,6 +88,7 @@ public class CPUFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //initialize fragments
+        mContext = getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         rootView = inflater.inflate(R.layout.cpu_layout,
                 (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
@@ -162,8 +167,6 @@ public class CPUFragment extends Fragment {
         }
 
         updateListView(VALUE_START, jsonMETA);
-//        setLinearLayoutHeight(rootView.findViewById(R.id.cpu_meta_listview));
-        setListViewHeight(listView);
 
         systemLoad =  data.get("system") * 10;
         userLoad = data.get("user") * 10;
@@ -202,7 +205,9 @@ public class CPUFragment extends Fragment {
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 if (listView.isGroupExpanded(groupPosition)) {
                     listView.collapseGroupWithAnimation(groupPosition);
+                    DynamicListviewUtil.newInstance().resetHeight(listView, groupPosition);
                 } else {
+                    DynamicListviewUtil.newInstance().setExpandableListViewHeight(listView, groupPosition);
                     listView.expandGroupWithAnimation(groupPosition);
                 }
                 return true;
@@ -217,27 +222,6 @@ public class CPUFragment extends Fragment {
 
         groupItem.items.add(childItem);
         adapter.notifyDataSetChanged();
-    }
-
-    private void setLinearLayoutHeight(View view) {
-        ViewGroup.LayoutParams linearParams = view.getLayoutParams();
-        linearParams.height += 600;
-    }
-
-    private void setListViewHeight(ExpandableListView view) {
-        ListAdapter listAdapter = view.getAdapter();
-        int totalHeight = 0;
-
-        for (int i = 0; i < listAdapter.getCount(); ++i) {
-            View listItem = listAdapter.getView(i, null, view);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
     }
 
     @Override

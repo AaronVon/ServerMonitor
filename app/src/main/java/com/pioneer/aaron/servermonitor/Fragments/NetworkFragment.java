@@ -1,5 +1,6 @@
 package com.pioneer.aaron.servermonitor.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.pioneer.aaron.servermonitor.Adapters.ExpandableListAdapter;
 import com.pioneer.aaron.servermonitor.Constants.Constants;
+import com.pioneer.aaron.servermonitor.Constants.ExpandableListView_Helper;
+import com.pioneer.aaron.servermonitor.Helper.DynamicListviewUtil;
 import com.pioneer.aaron.servermonitor.Helper.SystemTime;
 import com.pioneer.aaron.servermonitor.JsonUtilities.JsonHttpUtil;
 import com.pioneer.aaron.servermonitor.JsonUtilities.NetworkjsonParser;
@@ -28,6 +32,7 @@ import com.db.chart.view.XController;
 import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
+import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
 
 import android.os.Build;
 import android.animation.TimeInterpolator;
@@ -39,11 +44,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewParent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ExpandableListView;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -142,6 +150,12 @@ public class NetworkFragment extends Fragment {
 
     private Timer mTimer;
     private boolean instanceLoaded = false;
+    private Context mContext;
+    //expandablelistview with animation
+    private AnimatedExpandableListView listView;
+    private ExpandableListAdapter adapter;
+    private List<ExpandableListView_Helper.GroupItem> items = new ArrayList<>();
+    private ExpandableListView_Helper.GroupItem groupItem = new ExpandableListView_Helper.GroupItem();
 
 
     public static NetworkFragment newInstance() {
@@ -151,6 +165,7 @@ public class NetworkFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         rootView = inflater.inflate(R.layout.network_layout,
                 (ViewGroup) getActivity().findViewById(R.id.materialViewPager), false);
@@ -179,8 +194,8 @@ public class NetworkFragment extends Fragment {
         mOldStartY = 0;
         mOldAlpha = -1;
         mHorBarChart = (HorizontalBarChartView) rootView.findViewById(R.id.horbarchart);
-        mHorBarChart.setOnEntryClickListener(horBarEntryListener);
-        mHorBarChart.setOnClickListener(horBarClickListener);
+//        mHorBarChart.setOnEntryClickListener(horBarEntryListener);
+//        mHorBarChart.setOnClickListener(horBarClickListener);
 
         mHorBarGridPaint = new Paint();
         mHorBarGridPaint.setColor(this.getResources().getColor(R.color.bar_grid));
@@ -188,17 +203,35 @@ public class NetworkFragment extends Fragment {
         mHorBarGridPaint.setAntiAlias(true);
         mHorBarGridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
         updateHorBarChart();
-
+        initListView();
         instanceLoaded = true;
 
         mTimer = new Timer();
 
-        /*mTimer.schedule(new TimerTask() {
+    }
+
+    private void initListView() {
+        groupItem.title = "JSON META";
+        items.add(groupItem);
+
+        adapter = new ExpandableListAdapter(mContext);
+        adapter.setData(items);
+
+        listView = (AnimatedExpandableListView) rootView.findViewById(R.id.network_meta_listview);
+        listView.setAdapter(adapter);
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
-            public void run() {
-                mHandler.sendEmptyMessage(0);
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (listView.isGroupExpanded(groupPosition)) {
+                    listView.collapseGroupWithAnimation(groupPosition);
+                    DynamicListviewUtil.newInstance().resetHeight(listView, groupPosition);
+                } else {
+                    DynamicListviewUtil.newInstance().setExpandableListViewHeight(listView, groupPosition);
+                    listView.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
             }
-        }, 50, 20000);*/
+        });
     }
 
     private void updateUI() {
@@ -215,6 +248,9 @@ public class NetworkFragment extends Fragment {
             e.printStackTrace();
         }
         String jsonMETA = new JsonHttpUtil().getJsonMETA(Constants.POST_URL, params);
+
+        updateListView(VALUE_START, jsonMETA);
+
         Map<String, Float> data = NetworkjsonParser.newInstance().parseJSON(jsonMETA);
 
         if (null == data.get("vpns0_r")) {
@@ -223,6 +259,15 @@ public class NetworkFragment extends Fragment {
 
         fillBarValues(data);
         updateHorBarChart();
+    }
+
+    private void updateListView(String hint, String title) {
+        ExpandableListView_Helper.ChildItem childItem = new ExpandableListView_Helper.ChildItem();
+        childItem.title = title;
+        childItem.hint = hint;
+
+        groupItem.items.add(childItem);
+        adapter.notifyDataSetChanged();
     }
 
     public void fillBarValues(Map<String, Float> data) {
