@@ -47,4 +47,5 @@
     <color name="stackbar_fill2_h">#4fdcf0</color>
     <color name="stackbar_fill3_h">#8fe5f1</color>
     <color name="stackbar_tooltip">#ffffff</color>
+    <color name="text_selected">#888</color>
 </resources>

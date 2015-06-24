@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.HeaderDesign;
 import com.github.florent37.materialviewpager.MaterialViewPager;
@@ -25,6 +26,8 @@ import com.pioneer.aaron.servermonitor.Fragments.DiskFragment;
 import com.pioneer.aaron.servermonitor.Fragments.MemoryFragment;
 import com.pioneer.aaron.servermonitor.Fragments.NetworkFragment;
 import com.pioneer.aaron.servermonitor.Helper.NetworkStatusUtil;
+import com.pioneer.aaron.servermonitor.SharedPres.SharedPres;
+import com.pioneer.aaron.servermonitor.TourGuide.TourGuideAct;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,9 +39,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initStartUp();
         setContentView(R.layout.activity_main);
         init();
         checkNetworkState();
+    }
+
+    /**
+     * if this app is fired for the first time
+     * go to guide page*/
+    private void initStartUp() {
+        SharedPres preference = new SharedPres(this);
+        if (preference.isFirstRun()) {
+            Intent intent = new Intent(this, TourGuideAct.class);
+            startActivity(intent);
+        } else {
+            /*setContentView(R.layout.activity_main);
+            init();*/
+        }
     }
 
     private void init() {

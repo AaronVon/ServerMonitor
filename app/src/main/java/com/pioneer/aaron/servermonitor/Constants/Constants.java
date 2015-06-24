@@ -29,4 +29,7 @@ public interface Constants {
     //process
     String PROCESS_VALUE_KEYS = "[\"Uptime\",\"SysInfo.*\",\"Packages.*\"]";
 
+    //SharedPreferences
+    String SHAREDPREFS = "sharedPres";
+    String INITIALIZED = "isFirstRun";
 }
