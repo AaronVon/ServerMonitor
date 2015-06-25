@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.HeaderDesign;
 import com.github.florent37.materialviewpager.MaterialViewPager;
+import com.pioneer.aaron.servermonitor.Constants.Constants;
 import com.pioneer.aaron.servermonitor.Fragments.CPUFragment;
 import com.pioneer.aaron.servermonitor.Fragments.DiskFragment;
 import com.pioneer.aaron.servermonitor.Fragments.MemoryFragment;
@@ -231,5 +232,11 @@ public class MainActivity extends AppCompatActivity {
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        new StatusAlert(this).showNotification(Constants.BACKGROUND_SERVICE, "ServerMonitor in background");
     }
 }

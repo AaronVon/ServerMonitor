@@ -33,6 +33,7 @@ import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
 import com.pioneer.aaron.servermonitor.SharedPres.SharedPres;
+import com.pioneer.aaron.servermonitor.StatusAlert;
 import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
 
 import android.os.Build;
@@ -272,9 +273,13 @@ public class NetworkFragment extends Fragment {
     }
 
     public void fillBarValues(Map<String, Float> data) {
-
+        float totalTrafic = 0;
         for (int i = 0; i < data_keys.length; ++i) {
             horBarValues[0][i] = data.get(data_keys[i]);
+            totalTrafic += horBarValues[0][i];
+        }
+        if (totalTrafic > 1000.0) {
+            new StatusAlert(mContext).showNotification(Constants.NET_NOTIF, "netwotk trafic overload " + totalTrafic + "KB");
         }
     }
 

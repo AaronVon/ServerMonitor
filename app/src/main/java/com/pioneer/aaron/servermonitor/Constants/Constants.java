@@ -34,4 +34,11 @@ public interface Constants {
     String INITIALIZED = "isFirstRun";
     String REFRESHGAP = "refreshgap";
     String SETTINGTIP = "setTipIsFirst";
+
+    //notification id
+    int BACKGROUND_SERVICE = 0;
+    int CPU_NOTIF = 1;
+    int MEMORY_NOTIF = 2;
+    int NET_NOTIF = 3;
+    int DISK_NOTIFY = 4;
 }

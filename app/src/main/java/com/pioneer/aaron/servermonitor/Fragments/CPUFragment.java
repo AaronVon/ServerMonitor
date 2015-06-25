@@ -31,6 +31,7 @@ import com.pioneer.aaron.servermonitor.JsonUtilities.CPUjsonParser;
 import com.pioneer.aaron.servermonitor.JsonUtilities.JsonHttpUtil;
 import com.pioneer.aaron.servermonitor.R;
 import com.pioneer.aaron.servermonitor.SharedPres.SharedPres;
+import com.pioneer.aaron.servermonitor.StatusAlert;
 import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
 import com.pioneer.aaron.servermonitor.Constants.ExpandableListView_Helper.*;
 
@@ -181,6 +182,10 @@ public class CPUFragment extends Fragment {
         systemTextView.setText("System " + PrecisionFormat.newInstance().shrink(systemLoad, 2) + "%");
         userTextView.setText("User " + PrecisionFormat.newInstance().shrink(userLoad, 2) + "%");
         waitTextView.setText("Wait " + PrecisionFormat.newInstance().shrink(waitLoad, 2) + "%");
+
+        if (systemLoad > 60.0) {
+            new StatusAlert(mContext).showNotification(Constants.CPU_NOTIF, "CPU overload " + systemLoad + "%");
+        }
 
         int percentageInAll = (int) (systemLoad + userLoad + waitLoad);
 

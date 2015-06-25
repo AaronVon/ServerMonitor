@@ -27,6 +27,7 @@ import com.pioneer.aaron.servermonitor.JsonUtilities.MemoryjsonParser;
 import com.pioneer.aaron.servermonitor.MainActivity;
 import com.pioneer.aaron.servermonitor.R;
 import com.pioneer.aaron.servermonitor.SharedPres.SharedPres;
+import com.pioneer.aaron.servermonitor.StatusAlert;
 import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
 import com.pioneer.aaron.servermonitor.Constants.ExpandableListView_Helper.*;
 
@@ -185,6 +186,10 @@ public class MemoryFragment extends Fragment {
 
         usedTextView.setText("Used: " + PrecisionFormat.newInstance().shrink(usedLoad, 2) + "MB");
         freeTextView.setText("Free: " + PrecisionFormat.newInstance().shrink(freeLoad, 2) + "MB");
+
+        if (usedLoad > 900.0) {
+            new StatusAlert(mContext).showNotification(Constants.MEMORY_NOTIF, "RAM overload " + usedLoad + "MB");
+        }
 
         wheelIndicatorView.setFilledPercent(100);
         usedIndicatorItem.setWeight(usedLoad);
