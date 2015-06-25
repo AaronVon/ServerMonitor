@@ -32,4 +32,6 @@ public interface Constants {
     //SharedPreferences
     String SHAREDPREFS = "sharedPres";
     String INITIALIZED = "isFirstRun";
+    String REFRESHGAP = "refreshgap";
+    String SETTINGTIP = "setTipIsFirst";
 }

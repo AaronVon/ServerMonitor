@@ -49,6 +49,7 @@ import com.db.chart.view.XController;
 import com.db.chart.view.animation.Animation;
 import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.quint.QuintEaseOut;
+import com.pioneer.aaron.servermonitor.SharedPres.SharedPres;
 import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
 
 import android.os.Build;
@@ -211,13 +212,15 @@ public class DiskFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && instanceLoaded) {
+            long period = new SharedPres(mContext).getInt(Constants.REFRESHGAP, 10) * 1000;
+
             mTimer = new Timer();
             mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(0);
                 }
-            }, 0, 10000);
+            }, 0, period);
         }
         if (!isVisibleToUser && instanceLoaded) {
             mTimer.cancel();

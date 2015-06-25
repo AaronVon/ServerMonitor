@@ -52,4 +52,9 @@
         <item name="android:textSize">@dimen/welcome_content</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <!--set activity transparent-->
+    <style name="AppTheme.Transparent">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

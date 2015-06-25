@@ -48,4 +48,8 @@
     <color name="stackbar_fill3_h">#8fe5f1</color>
     <color name="stackbar_tooltip">#ffffff</color>
     <color name="text_selected">#888</color>
+    <color name="white">#ffff</color>
+    <color name="setting_back">#ffefebe7</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#000</color>
 </resources>

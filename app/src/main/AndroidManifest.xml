@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".TourGuide.TourGuideAct" />
+        <activity android:name=".SettingAct"
+            android:theme="@style/AppTheme.Transparent"/>
     </application>
 
 </manifest>

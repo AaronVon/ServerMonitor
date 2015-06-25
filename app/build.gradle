@@ -30,4 +30,5 @@ dependencies {
     compile files('/Users/Aaron/repositories/ServerMonitor/libs/listviewanimations_lib-core_3.1.0.jar')
     compile files('/Users/Aaron/repositories/ServerMonitor/libs/listviewanimations_lib-manipulation_3.1.0.jar')
     compile 'com.diogobernardino:williamchart:1.7.0'
+    compile 'me.imid.swipebacklayout.lib:library:1.0.0'
 }

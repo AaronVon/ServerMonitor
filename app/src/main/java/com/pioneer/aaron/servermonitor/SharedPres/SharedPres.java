@@ -15,24 +15,42 @@ import java.util.Set;
  */
 public class SharedPres implements SharedPreferences {
     private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     public SharedPres(Context mContext) {
         preferences = mContext.getSharedPreferences(Constants.SHAREDPREFS, Context.MODE_PRIVATE);
+        editor = preferences.edit();
     }
 
     public boolean isFirstRun() {
         boolean isFirst;
         isFirst = preferences.getBoolean(Constants.INITIALIZED, true);
-        Log.d("isfirst", isFirst + "");
 
         if (isFirst) {
-            SharedPreferences.Editor editor = preferences.edit();
+//            SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(Constants.INITIALIZED, false);
+            editor.putInt(Constants.REFRESHGAP, 10);
+            editor.putBoolean(Constants.SETTINGTIP, true);
             editor.commit();
             editor.clear();
         }
 
         return isFirst;
+    }
+
+    public void resetPrefs() {
+//        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(Constants.INITIALIZED, true);
+        editor.putInt(Constants.REFRESHGAP, 10);
+        editor.putBoolean(Constants.SETTINGTIP, true);
+        editor.commit();
+        editor.clear();
+    }
+
+    public void setRefreshGap(int value) {
+        editor.putInt(Constants.REFRESHGAP, value);
+        editor.commit();
+        editor.clear();
     }
 
     @Override
@@ -54,7 +72,7 @@ public class SharedPres implements SharedPreferences {
 
     @Override
     public int getInt(String key, int defValue) {
-        return 0;
+        return preferences.getInt(key, defValue);
     }
 
     @Override
@@ -69,7 +87,7 @@ public class SharedPres implements SharedPreferences {
 
     @Override
     public boolean getBoolean(String key, boolean defValue) {
-        return false;
+        return preferences.getBoolean(key, defValue);
     }
 
     @Override
@@ -79,7 +97,7 @@ public class SharedPres implements SharedPreferences {
 
     @Override
     public Editor edit() {
-        return null;
+        return preferences.edit();
     }
 
     @Override

@@ -208,15 +208,20 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
-            new AlertDialog.Builder(this)
-                    .setIcon(R.drawable.ic_launcher)
-                    .setTitle("About us")
-                    .setMessage("这是一个实时服务器监视的软件，通过 HTTP 获取服务器(Linux)端的运行状态，包含 CPU、内存、网络、磁盘、处理器的状态信息。\n"
-                        +"APP 端开发: 冯文瀚\n"+"Server 端开发: 彭璟文")
-                    .setPositiveButton("OK", null)
-                    .show();
-            return true;
+        switch (id) {
+            case R.id.action_about:
+                new AlertDialog.Builder(this)
+                        .setIcon(R.drawable.ic_launcher)
+                        .setTitle("About us")
+                        .setMessage("这是一个实时服务器监视的软件，通过 HTTP 获取服务器(Linux)端的运行状态，包含 CPU、内存、网络、磁盘、处理器的状态信息。\n"
+                                +"APP 端开发: 冯文瀚\n"+"Server 端开发: 彭璟文")
+                        .setPositiveButton("OK", null)
+                        .show();
+                break;
+            case R.id.action_prefs:
+                Intent intent = new Intent(this, SettingAct.class);
+                startActivity(intent);
+                break;
         }
 
         return super.onOptionsItemSelected(item);

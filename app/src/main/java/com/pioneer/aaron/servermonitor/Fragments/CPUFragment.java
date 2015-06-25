@@ -1,6 +1,7 @@
 package com.pioneer.aaron.servermonitor.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
@@ -29,6 +30,7 @@ import com.pioneer.aaron.servermonitor.Helper.SystemTime;
 import com.pioneer.aaron.servermonitor.JsonUtilities.CPUjsonParser;
 import com.pioneer.aaron.servermonitor.JsonUtilities.JsonHttpUtil;
 import com.pioneer.aaron.servermonitor.R;
+import com.pioneer.aaron.servermonitor.SharedPres.SharedPres;
 import com.pioneer.aaron.servermonitor.Widgets.AnimatedExpandableListView;
 import com.pioneer.aaron.servermonitor.Constants.ExpandableListView_Helper.*;
 
@@ -109,6 +111,7 @@ public class CPUFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && instanceLoaded) {
+            long period = new SharedPres(mContext).getInt(Constants.REFRESHGAP, 10) * 1000;
             mTimer = new Timer();
             mTimer.schedule(new TimerTask() {
                 @Override
@@ -118,7 +121,7 @@ public class CPUFragment extends Fragment {
                     mHandler.sendEmptyMessage(0);
                     Log.d("cpufragment", "refresh ui");
                 }
-            }, 0, 10000);
+            }, 0, period);
         }
         if (!isVisibleToUser && instanceLoaded) {
             mTimer.cancel();
