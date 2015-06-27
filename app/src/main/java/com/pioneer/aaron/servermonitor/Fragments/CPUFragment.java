@@ -122,7 +122,7 @@ public class CPUFragment extends Fragment {
                     mHandler.sendEmptyMessage(0);
                     Log.d("cpufragment", "refresh ui");
                 }
-            }, 0, period);
+            }, 1000, period);
         }
         if (!isVisibleToUser && instanceLoaded) {
             mTimer.cancel();

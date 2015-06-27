@@ -122,27 +122,27 @@ public class MainActivity extends AppCompatActivity {
             public HeaderDesign getHeaderDesign(int i) {
                 switch (i) {
                     case 0:
-                        return HeaderDesign.fromColorAndDrawable(
+                        return HeaderDesign.fromColorAndUrl(
                                 R.color.blue,
-                                getResources().getDrawable(R.drawable.header_1));
+                                "http://images.shejidaren.com/wp-content/uploads/2014/10/023746fki.jpg");
                     case 1:
-                        return HeaderDesign.fromColorAndDrawable(
+                        return HeaderDesign.fromColorAndUrl(
                                 R.color.green,
-                                getResources().getDrawable(R.drawable.header_2));
+                                "http://images.shejidaren.com/wp-content/uploads/2014/10/023746GDy.jpg");
                     case 2:
-                        return HeaderDesign.fromColorAndDrawable(
+                        return HeaderDesign.fromColorAndUrl(
                                 R.color.cyan,
-                                getResources().getDrawable(R.drawable.header_3));
+                                "http://images.shejidaren.com/wp-content/uploads/2014/10/023747fCg.jpg");
                     case 3:
-                        return HeaderDesign.fromColorAndDrawable(
+                        return HeaderDesign.fromColorAndUrl(
                                 R.color.red,
-                                getResources().getDrawable(R.drawable.header_4));
+                                "http://images.shejidaren.com/wp-content/uploads/2014/10/023747wUe.jpg");
                 }
                 return null;
             }
         });
 
-        mViewPager.getViewPager().setOffscreenPageLimit(1);
+        mViewPager.getViewPager().setOffscreenPageLimit(4);
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
         mViewPager.getViewPager().setCurrentItem(0);
 

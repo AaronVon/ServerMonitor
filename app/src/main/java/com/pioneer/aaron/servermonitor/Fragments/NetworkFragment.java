@@ -302,7 +302,7 @@ public class NetworkFragment extends Fragment {
                 public void run() {
                     mHandler.sendEmptyMessage(0);
                 }
-            }, 0, period);
+            }, 1000, period);
         }
         if (!isVisibleToUser && instanceLoaded) {
             mTimer.cancel();
