@@ -62,8 +62,8 @@
                 android:layout_marginRight="10dp"
                 android:id="@+id/refreshgap_seekBar"
                 android:layout_gravity="center_horizontal"
-                android:max="300"
-                android:progress="10"
+                android:max="59"
+                android:progress="0"
                 android:indeterminate="false" />
 
             <Button

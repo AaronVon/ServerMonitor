@@ -60,11 +60,8 @@ public class SettingAct extends SwipeBackActivity{
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch (seekBar.getId()) {
                     case R.id.refreshgap_seekBar:
-                        int valueSeekBar = seekBar.getProgress();
+                        int valueSeekBar = (seekBar.getProgress() + 1) * 5;
                         refreshGapTip.setText(String.valueOf(valueSeekBar) + "s");
-                        if (valueSeekBar == 0) {
-                            valueSeekBar = 1;
-                        }
                         SharedPres pres = new SharedPres(SettingAct.this);
                         pres.setRefreshGap(valueSeekBar);
                         break;
